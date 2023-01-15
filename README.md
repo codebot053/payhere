@@ -27,9 +27,19 @@
 
 **ERD**
 
+<img width="695" alt="Screen Shot 2023-01-15 at 9 54 28 PM" src="https://user-images.githubusercontent.com/98141328/212541933-46d670a3-1107-46fd-aeaf-61893d29d5fc.png">
+
 **API EndPoint**
 |Index|URI|Method|Description|
-|:---:|:---:|:---:|:---:|
-|||||
+|:---|:---|:---|:---|
+|1|{ServiceRoot}/signup/|POST|회원가입|
+|2|{ServiceRoot}/login/|POST|로그인|
+|3|{ServiceRoot}/logout/|POST|로그아웃|
+|4|{ServiceRoot}/moneybook/|POST|메모 생성|
+|5|{ServiceRoot}/moneybook/|GET|메모 리스트 조회|
+|6|{ServiceRoot}/moneybook/\<int:money_log_id>/|GET|메모 세부내역 조회|
+|7|{ServiceRoot}/moneybook/\<int:money_log_id>/|PUT|메모 수정|
+|8|{ServiceRoot}/moneybook/\<int:money_log_id>/|DELETE|메모 삭제|
+|9|{ServiceRoot}/moneybook/\<int:money_log_id>/duplication/|POST|특정 메모 세부내역 복제|
 
 **Test Case**
