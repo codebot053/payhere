@@ -23,7 +23,9 @@ class MoneyBookLogAPIView(APIView):
         return Response(
             {
                 "userMoneybook": MoneyBookSerializer(user_moneybook).data,
-                "logList": MoneyBookLogListSerializer(user_moneybook_log, many=True).data
+                "logList": MoneyBookLogListSerializer(
+                    user_moneybook_log, many=True
+                ).data,
             },
             status=status.HTTP_200_OK,
         )
@@ -51,7 +53,9 @@ class MoneyBookLogAPIView(APIView):
 
             return Response({"msg": serializer.data}, status=status.HTTP_201_CREATED)
 
-        return Response({"error": serializer.error_messages}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": serializer.error_messages}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class MoneyBookLogDetailAPIView(APIView):
@@ -106,7 +110,7 @@ class MoneyBookLogDetailAPIView(APIView):
 
             return Response(
                 {"msg": "기록 수정 성공", "detailLog": serializer.data},
-                status=status.HTTP_200_OK
+                status=status.HTTP_200_OK,
             )
 
     def delete(self, request, log_id):
