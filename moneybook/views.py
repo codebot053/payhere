@@ -54,7 +54,7 @@ class MoneyBookLogAPIView(APIView):
 
 class MoneyBookLogDetailAPIView(APIView):
     """
-    MoneyBookLog 모델 RETRIEVE APIView
+    MoneyBookLog 모델 RETRIEVE, UPDATE APIView
     URI: {service_root}/moneybook/<int:log_id>/
     """
 
@@ -71,3 +71,26 @@ class MoneyBookLogDetailAPIView(APIView):
             {"detailLog": MoneyBookLogSerializer(user_moneybook_log).data},
             status=status.HTTP_200_OK,
         )
+
+    def put(self, request, log_id):
+        user = request.user
+        user_moneybook = MoneyBook.objects.get(user=user)
+        user_moneybook_log = MoneyBookLog.objects.get(
+            moneybook=user_moneybook, log_id=log_id
+        )
+        cash_before = user_moneybook_log.cash
+        serializer = MoneyBookLogSerializer(
+            user_moneybook_log, data=request.data, partial=True
+        )
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            cash_after = serializer.data.get("cash")
+            cash_difference = cash_after - cash_before
+            user_moneybook.cash_amount += cash_difference
+            user_moneybook.save()
+
+            return Response(
+                {"msg": "success", "detailLog": serializer.data},
+                status=status.HTTP_200_OK,
+            )
