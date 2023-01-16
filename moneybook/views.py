@@ -56,7 +56,7 @@ class MoneyBookLogAPIView(APIView):
 
 class MoneyBookLogDetailAPIView(APIView):
     """
-    MoneyBookLog 모델 RETRIEVE, UPDATE APIView
+    MoneyBookLog 모델 RETRIEVE, UPDATE , DELETE APIView
     URI: {service_root}/moneybook/<int:log_id>/
     """
 
