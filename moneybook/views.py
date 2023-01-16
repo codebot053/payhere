@@ -50,3 +50,24 @@ class MoneyBookLogAPIView(APIView):
         return Response(
             {"error": serializer.error_messages}, status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class MoneyBookLogDetailAPIView(APIView):
+    """
+    MoneyBookLog 모델 RETRIEVE APIView
+    URI: {service_root}/moneybook/<int:log_id>/
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, log_id):
+        user = request.user
+        user_moneybook = MoneyBook.objects.get(user=user)
+        user_moneybook_log = MoneyBookLog.objects.get(
+            moneybook=user_moneybook, log_id=log_id
+        )
+
+        return Response(
+            {"detailLog": MoneyBookLogSerializer(user_moneybook_log).data},
+            status=status.HTTP_200_OK,
+        )
