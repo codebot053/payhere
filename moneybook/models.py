@@ -2,11 +2,13 @@ from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator
 
+
 class MoneyBook(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     cash_amount = models.IntegerField(default=0)
     latest_log_id = models.IntegerField(default=0)
-    
+
+
 class MoneyBookLog(models.Model):
     LOG_STATUS = (
         ("IC", "Income"),
