@@ -5,7 +5,6 @@ from .models import User
 from moneybook.models import MoneyBook
 
 
-
 class UserCreateSerializer(serializers.ModelSerializer):
     """유저 생성을 위한 ModelSerializer"""
 
@@ -25,8 +24,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = ["email", "name", "password", "password2"]
 
     def validate(self, data):
+        
         if data["password"] != data["password2"]:
             raise serializers.ValidationError({"password": "비밀번호가 일치하지 않습니다."})
+
         return data
 
     def create(self, validated_data):
@@ -43,8 +44,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user_moneybook.save()
         return user
 
+
 class UserLogInSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = User
         fields = ["email", "name"]

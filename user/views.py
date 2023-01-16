@@ -9,6 +9,15 @@ from .serializers import UserCreateSerializer, UserLogInSerializer
 
 
 class SignUpAPIView(generics.CreateAPIView):
+    """
+    회원가입
+    {
+        "email": "example@test.com",
+        "name": "example",
+        "password": "example"
+    }
+    """
+
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
 
@@ -27,11 +36,13 @@ class LogInAPIView(APIView):
         user = authenticate(
             email=request.data.get("email"), password=request.data.get("password")
         )
+
         if user is not None:
             serializer = UserLogInSerializer(user)
             token = TokenObtainPairSerializer.get_token(user)
             refresh_token = str(token)
             access_token = str(token.access_token)
+
             return Response(
                 {
                     "user": serializer.data,
@@ -41,4 +52,5 @@ class LogInAPIView(APIView):
                 },
                 status=status.HTTP_200_OK,
             )
+            
         return Response({"message": "로그인 실패"}, status=status.HTTP_400_BAD_REQUEST)
