@@ -42,7 +42,13 @@ class MoneyBookLogAPIView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             user_moneybook.latest_log_id += 1
-            user_moneybook.cash_amount += serializer.data.get("cash")
+            cash = serializer.data.get("cash")
+
+            if serializer.data.get("log_status") == "IC":
+                user_moneybook.cash_amount += cash
+            else:
+                user_moneybook.cash_amount -= cash
+
             user_moneybook.save()
 
             return Response({"msg": serializer.data}, status=status.HTTP_201_CREATED)
@@ -78,23 +84,35 @@ class MoneyBookLogDetailAPIView(APIView):
         user_moneybook_log = MoneyBookLog.objects.get(
             moneybook=user_moneybook, log_id=log_id
         )
-        cash_before = user_moneybook_log.cash
+        current_cash_amount = user_moneybook.cash_amount
+        current_cash = user_moneybook_log.cash
+
+        if user_moneybook_log.log_status == "IC":
+            current_cash_amount -= current_cash
+        else:
+            current_cash_amount += current_cash
+
         serializer = MoneyBookLogSerializer(
             user_moneybook_log, data=request.data, partial=True
         )
 
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            cash_after = serializer.data.get("cash")
-            cash_difference = cash_after - cash_before
-            user_moneybook.cash_amount += cash_difference
+            change_cash = serializer.data.get("cash")
+
+            if serializer.data.get("log_status") == "IC":
+                current_cash_amount += change_cash
+            else:
+                current_cash_amount -= change_cash
+
+            user_moneybook.cash_amount = current_cash_amount
             user_moneybook.save()
 
             return Response(
                 {"msg": "success", "detailLog": serializer.data},
                 status=status.HTTP_200_OK,
             )
-            
+
     def delete(self, request, log_id):
         user = request.user
         user_moneybook = MoneyBook.objects.get(user=user)
@@ -102,13 +120,14 @@ class MoneyBookLogDetailAPIView(APIView):
             moneybook=user_moneybook, log_id=log_id
         )
         cash = user_moneybook_log.cash
-        
-        if user_moneybook_log.log_status == 'IC':
+
+        if user_moneybook_log.log_status == "IC":
             user_moneybook.cash_amount -= cash
         else:
             user_moneybook.cash_amount += cash
+
         user_moneybook.latest_log_id -= 1
         user_moneybook.save()
         user_moneybook_log.delete()
 
-        return Response({"msg": "기록 삭제 성공"},status=status.HTTP_200_OK)
+        return Response({"msg": "기록 삭제 성공"}, status=status.HTTP_200_OK)
