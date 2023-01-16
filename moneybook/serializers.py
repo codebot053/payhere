@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import MoneyBook, MoneyBookLog
 
 
-class MoneybookSerializer(serializers.ModelSerializer):
+class MoneyBookSerializer(serializers.ModelSerializer):
     """
     model: MoneyBook
     LIST 사용
