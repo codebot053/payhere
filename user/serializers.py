@@ -42,3 +42,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user_moneybook = MoneyBook.objects.create(user=user)
         user_moneybook.save()
         return user
+
+class UserLogInSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ["email", "name"]
