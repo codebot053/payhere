@@ -8,7 +8,7 @@ from .models import User
 from .serializers import UserCreateSerializer, UserLogInSerializer
 
 
-class SignUpView(generics.CreateAPIView):
+class SignUpAPIView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
 
